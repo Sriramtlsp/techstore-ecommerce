@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore - Laptop Accessories & Computer Peripherals</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Enhanced Filter Styles */
+        .filters-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .filters-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .price-range {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .price-range span {
+            text-align: center;
+            color: #666;
+        }
+
+        .filter-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .filter-tag {
+            background: #3498db;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-tag .remove {
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .clear-filters {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .clear-filters:hover {
+            background: #c0392b;
+        }
+
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .results-count {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .sort-dropdown {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #666;
+        }
+
+        .no-results h3 {
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .filters-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .products-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">TechStore</div>
+                <nav>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="#products">Products</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="/track.html">Track Order</a></li>
+                        <li><a href="/cart.html">Cart (<span class="cart-count">0</span>)</a></li>
+                        <li><a href="/profile.html" class="profile-link" style="display: none;">Profile</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons">
+                    <a href="/login.html" class="btn btn-primary">Login</a>
+                    <a href="/register.html" class="btn btn-secondary">Register</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Welcome to TechStore</h1>
+            <p>Your one-stop shop for laptop accessories, computer peripherals, and printer accessories</p>
+            <a href="#products" class="btn btn-primary">Shop Now</a>
+        </div>
+    </section>
+
+    <section id="products" class="products-section">
+        <div class="container">
+            <h2 class="section-title">Our Products</h2>
+            
+            <!-- Enhanced Filters -->
+            <div class="filters-container">
+                <div class="filters-row">
+                    <!-- Search -->
+                    <div class="filter-group">
+                        <label for="searchInput">Search Products</label>
+                        <input type="text" id="searchInput" placeholder="Search by name or description..." class="form-control">
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div class="filter-group">
+                        <label for="categoryFilter">Category</label>
+                        <select id="categoryFilter" class="form-control">
+                            <option value="">All Categories</option>
+                            <option value="laptop-accessories">Laptop Accessories</option>
+                            <option value="computer-peripherals">Computer Peripherals</option>
+                            <option value="printer-accessories">Printer Accessories</option>
+                        </select>
+                    </div>
+
+                    <!-- Price Range -->
+                    <div class="filter-group">
+                        <label>Price Range (₹)</label>
+                        <div class="price-range">
+                            <input type="number" id="minPrice" placeholder="Min" class="form-control">
+                            <span>to</span>
+                            <input type="number" id="maxPrice" placeholder="Max" class="form-control">
+                        </div>
+                    </div>
+
+                    <!-- Availability -->
+                    <div class="filter-group">
+                        <label for="availabilityFilter">Availability</label>
+                        <select id="availabilityFilter" class="form-control">
+                            <option value="">All Products</option>
+                            <option value="in-stock">In Stock</option>
+                            <option value="low-stock">Low Stock (< 20)</option>
+                            <option value="out-of-stock">Out of Stock</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Active Filters and Clear Button -->
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div class="filter-tags" id="activeFilters"></div>
+                    <button class="clear-filters" onclick="clearAllFilters()">Clear All Filters</button>
+                </div>
+            </div>
+
+            <!-- Products Header with Sort -->
+            <div class="products-header">
+                <div class="results-count" id="resultsCount">Loading products...</div>
+                <div class="filter-group" style="margin: 0;">
+                    <label for="sortBy" style="margin-right: 0.5rem;">Sort by:</label>
+                    <select id="sortBy" class="sort-dropdown">
+                        <option value="name-asc">Name (A-Z)</option>
+                        <option value="name-desc">Name (Z-A)</option>
+                        <option value="price-asc">Price (Low to High)</option>
+                        <option value="price-desc">Price (High to Low)</option>
+                        <option value="stock-desc">Stock (High to Low)</option>
+                        <option value="newest">Newest First</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be loaded here -->
+                <div style="text-align: center; grid-column: 1 / -1;">
+                    <div class="loading"></div>
+                    <p>Loading products...</p>
+                </div>
+            </div>
+
+            <!-- No Results Message -->
+            <div class="no-results" id="noResults" style="display: none;">
+                <h3>No products found</h3>
+                <p>Try adjusting your filters or search terms</p>
+                <button class="btn btn-primary" onclick="clearAllFilters()">Clear Filters</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section" style="background: #f8f9fa; padding: 4rem 0; margin-top: 4rem;">
+        <div class="container">
+            <h2 class="section-title" style="text-align: center; margin-bottom: 3rem;">Get in Touch</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1000px; margin: 0 auto;">
+                
+                <!-- Contact Info Cards -->
+                <div style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 1rem;">📧</div>
+                    <h3 style="margin-bottom: 1rem; color: #2c3e50;">Email Us</h3>
+                    <p style="color: #666; margin-bottom: 0.5rem;">support@techstore.com</p>
+                    <p style="color: #666;">sales@techstore.com</p>
+                </div>
+
+                <div style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 1rem;">📞</div>
+                    <h3 style="margin-bottom: 1rem; color: #2c3e50;">Call Us</h3>
+                    <p style="color: #666; margin-bottom: 0.5rem;">+91 98765 43210</p>
+                    <p style="color: #666;">+91 87654 32109</p>
+                </div>
+
+                <div style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 1rem;">📍</div>
+                    <h3 style="margin-bottom: 1rem; color: #2c3e50;">Visit Us</h3>
+                    <p style="color: #666; margin-bottom: 0.5rem;">123 Tech Street, Electronic City</p>
+                    <p style="color: #666;">Mumbai, Maharashtra 400001</p>
+                </div>
+
+                <div style="background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center;">
+                    <div style="font-size: 2rem; margin-bottom: 1rem;">🕒</div>
+                    <h3 style="margin-bottom: 1rem; color: #2c3e50;">Business Hours</h3>
+                    <p style="color: #666; margin-bottom: 0.5rem;">Mon-Fri: 9:00 AM - 6:00 PM</p>
+                    <p style="color: #666;">Sat: 10:00 AM - 4:00 PM</p>
+                </div>
+
+            </div>
+
+            <!-- Quick Contact Form -->
+            <div style="max-width: 600px; margin: 3rem auto 0; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h3 style="text-align: center; margin-bottom: 2rem; color: #2c3e50;">Quick Contact</h3>
+                <form id="quickContactForm" style="display: grid; gap: 1rem;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <input type="text" placeholder="Your Name" required style="padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px;">
+                        <input type="email" placeholder="Your Email" required style="padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px;">
+                    </div>
+                    <input type="text" placeholder="Subject" required style="padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px;">
+                    <textarea placeholder="Your Message" rows="4" required style="padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; resize: vertical;"></textarea>
+                    <button type="submit" class="btn btn-primary" style="justify-self: center; padding: 0.75rem 2rem;">Send Message</button>
+                </form>
+            </div>
+
+            <!-- Live Chat Promotion -->
+            <div style="text-align: center; margin-top: 2rem; padding: 1.5rem; background: #3498db; color: white; border-radius: 10px;">
+                <h4 style="margin-bottom: 0.5rem;">Need Immediate Help?</h4>
+                <p style="margin-bottom: 1rem;">Chat with our support team instantly!</p>
+                <button onclick="if(window.liveChat) window.liveChat.toggleChat()" class="btn" style="background: white; color: #3498db; border: none; padding: 0.75rem 1.5rem; border-radius: 5px; font-weight: bold; cursor: pointer;">
+                    💬 Start Live Chat
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <footer style="background: #2c3e50; color: white; text-align: center; padding: 2rem 0; margin-top: 4rem;">
+        <div class="container">
+            <p>&copy; 2024 TechStore. All rights reserved.</p>
+            <p>Your trusted partner for laptop accessories, computer peripherals, and printer accessories</p>
+        </div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+    <script src="/js/livechat.js"></script>
+    <script>
+        // Enhanced filtering functionality
+        let allProducts = [];
+        let filteredProducts = [];
+        let currentFilters = {
+            search: '',
+            category: '',
+            minPrice: '',
+            maxPrice: '',
+            availability: '',
+            sortBy: 'name-asc'
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEnhancedFilters();
+            loadAllProducts();
+        });
+
+        function setupEnhancedFilters() {
+            // Search input
+            document.getElementById('searchInput').addEventListener('input', debounce((e) => {
+                currentFilters.search = e.target.value;
+                applyFilters();
+            }, 300));
+
+            // Category filter
+            document.getElementById('categoryFilter').addEventListener('change', (e) => {
+                currentFilters.category = e.target.value;
+                applyFilters();
+            });
+
+            // Price range filters
+            document.getElementById('minPrice').addEventListener('input', debounce((e) => {
+                currentFilters.minPrice = e.target.value;
+                applyFilters();
+            }, 500));
+
+            document.getElementById('maxPrice').addEventListener('input', debounce((e) => {
+                currentFilters.maxPrice = e.target.value;
+                applyFilters();
+            }, 500));
+
+            // Availability filter
+            document.getElementById('availabilityFilter').addEventListener('change', (e) => {
+                currentFilters.availability = e.target.value;
+                applyFilters();
+            });
+
+            // Sort dropdown
+            document.getElementById('sortBy').addEventListener('change', (e) => {
+                currentFilters.sortBy = e.target.value;
+                applyFilters();
+            });
+        }
+
+        async function loadAllProducts() {
+            try {
+                const data = await api.getProducts();
+                allProducts = data.products;
+                filteredProducts = [...allProducts];
+                applyFilters();
+            } catch (error) {
+                showAlert('Error loading products: ' + error.message, 'error');
+                document.getElementById('resultsCount').textContent = 'Error loading products';
+            }
+        }
+
+        function applyFilters() {
+            let filtered = [...allProducts];
+
+            // Apply search filter
+            if (currentFilters.search) {
+                const searchTerm = currentFilters.search.toLowerCase();
+                filtered = filtered.filter(product => 
+                    product.name.toLowerCase().includes(searchTerm) ||
+                    product.description.toLowerCase().includes(searchTerm)
+                );
+            }
+
+            // Apply category filter
+            if (currentFilters.category) {
+                filtered = filtered.filter(product => product.category === currentFilters.category);
+            }
+
+            // Apply price range filter
+            if (currentFilters.minPrice) {
+                filtered = filtered.filter(product => product.price >= parseInt(currentFilters.minPrice));
+            }
+            if (currentFilters.maxPrice) {
+                filtered = filtered.filter(product => product.price <= parseInt(currentFilters.maxPrice));
+            }
+
+            // Apply availability filter
+            if (currentFilters.availability) {
+                switch (currentFilters.availability) {
+                    case 'in-stock':
+                        filtered = filtered.filter(product => product.stock > 0);
+                        break;
+                    case 'low-stock':
+                        filtered = filtered.filter(product => product.stock > 0 && product.stock < 20);
+                        break;
+                    case 'out-of-stock':
+                        filtered = filtered.filter(product => product.stock === 0);
+                        break;
+                }
+            }
+
+            // Apply sorting
+            filtered = sortProducts(filtered, currentFilters.sortBy);
+
+            filteredProducts = filtered;
+            displayProducts(filtered);
+            updateActiveFilters();
+            updateResultsCount(filtered.length);
+        }
+
+        function sortProducts(products, sortBy) {
+            const sorted = [...products];
+            
+            switch (sortBy) {
+                case 'name-asc':
+                    return sorted.sort((a, b) => a.name.localeCompare(b.name));
+                case 'name-desc':
+                    return sorted.sort((a, b) => b.name.localeCompare(a.name));
+                case 'price-asc':
+                    return sorted.sort((a, b) => a.price - b.price);
+                case 'price-desc':
+                    return sorted.sort((a, b) => b.price - a.price);
+                case 'stock-desc':
+                    return sorted.sort((a, b) => b.stock - a.stock);
+                case 'newest':
+                    return sorted.reverse(); // Assuming newer products are added later
+                default:
+                    return sorted;
+            }
+        }
+
+        function displayProducts(products) {
+            const container = document.getElementById('productsGrid');
+            const noResults = document.getElementById('noResults');
+
+            if (products.length === 0) {
+                container.style.display = 'none';
+                noResults.style.display = 'block';
+                return;
+            }
+
+            container.style.display = 'grid';
+            noResults.style.display = 'none';
+
+            container.innerHTML = products.map(product => `
+                <div class="product-card">
+                    <img src="${product.image}" alt="${product.name}" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-name">${product.name}</h3>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-price">${formatPrice(product.price)}</div>
+                        <div class="product-stock" style="font-size: 0.9rem; color: ${product.stock > 20 ? '#27ae60' : product.stock > 0 ? '#f39c12' : '#e74c3c'}; margin: 0.5rem 0;">
+                            ${product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                        </div>
+                        <div class="product-actions">
+                            <button class="btn btn-primary" onclick="cartManager.addToCart(${JSON.stringify(product).replace(/"/g, '&quot;')})" 
+                                    ${product.stock === 0 ? 'disabled' : ''}>
+                                ${product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                            </button>
+                            <button class="btn btn-secondary" onclick="viewProduct('${product._id}')">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateActiveFilters() {
+            const container = document.getElementById('activeFilters');
+            const tags = [];
+
+            if (currentFilters.search) {
+                tags.push(`Search: "${currentFilters.search}"`);
+            }
+            if (currentFilters.category) {
+                const categoryName = document.querySelector(`#categoryFilter option[value="${currentFilters.category}"]`).textContent;
+                tags.push(`Category: ${categoryName}`);
+            }
+            if (currentFilters.minPrice || currentFilters.maxPrice) {
+                const min = currentFilters.minPrice || '0';
+                const max = currentFilters.maxPrice || '∞';
+                tags.push(`Price: ₹${min} - ₹${max}`);
+            }
+            if (currentFilters.availability) {
+                const availabilityName = document.querySelector(`#availabilityFilter option[value="${currentFilters.availability}"]`).textContent;
+                tags.push(`Availability: ${availabilityName}`);
+            }
+
+            container.innerHTML = tags.map((tag, index) => `
+                <div class="filter-tag">
+                    ${tag}
+                    <span class="remove" onclick="removeFilter(${index})">&times;</span>
+                </div>
+            `).join('');
+        }
+
+        function removeFilter(index) {
+            const tags = [];
+            if (currentFilters.search) tags.push('search');
+            if (currentFilters.category) tags.push('category');
+            if (currentFilters.minPrice || currentFilters.maxPrice) tags.push('price');
+            if (currentFilters.availability) tags.push('availability');
+
+            const filterType = tags[index];
+            
+            switch (filterType) {
+                case 'search':
+                    currentFilters.search = '';
+                    document.getElementById('searchInput').value = '';
+                    break;
+                case 'category':
+                    currentFilters.category = '';
+                    document.getElementById('categoryFilter').value = '';
+                    break;
+                case 'price':
+                    currentFilters.minPrice = '';
+                    currentFilters.maxPrice = '';
+                    document.getElementById('minPrice').value = '';
+                    document.getElementById('maxPrice').value = '';
+                    break;
+                case 'availability':
+                    currentFilters.availability = '';
+                    document.getElementById('availabilityFilter').value = '';
+                    break;
+            }
+            
+            applyFilters();
+        }
+
+        function clearAllFilters() {
+            currentFilters = {
+                search: '',
+                category: '',
+                minPrice: '',
+                maxPrice: '',
+                availability: '',
+                sortBy: 'name-asc'
+            };
+
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('minPrice').value = '';
+            document.getElementById('maxPrice').value = '';
+            document.getElementById('availabilityFilter').value = '';
+            document.getElementById('sortBy').value = 'name-asc';
+
+            applyFilters();
+        }
+
+        function updateResultsCount(count) {
+            const total = allProducts.length;
+            document.getElementById('resultsCount').textContent = 
+                `Showing ${count} of ${total} products`;
+        }
+
+        // Debounce function for search input
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Quick contact form functionality
+        document.getElementById('quickContactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            // Show loading state
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+            
+            try {
+                // Simulate form submission
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                const formData = new FormData(e.target);
+                const data = {
+                    name: formData.get('name') || e.target.querySelector('input[placeholder="Your Name"]').value,
+                    email: formData.get('email') || e.target.querySelector('input[placeholder="Your Email"]').value,
+                    subject: formData.get('subject') || e.target.querySelector('input[placeholder="Subject"]').value,
+                    message: formData.get('message') || e.target.querySelector('textarea').value
+                };
+                
+                // Here you would typically send the data to your backend
+                console.log('Quick contact form submitted:', data);
+                
+                showAlert('Message sent successfully! We\'ll get back to you soon.', 'success');
+                e.target.reset();
+                
+            } catch (error) {
+                showAlert('Error sending message. Please try again.', 'error');
+            } finally {
+                // Reset button state
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - TechStore</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .about-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .about-section {
+            padding: 3rem 0;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .about-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .about-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .team-member {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .team-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #3498db;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline {
+            position: relative;
+            margin: 2rem 0;
+        }
+
+        .timeline-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .timeline-year {
+            background: #3498db;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">TechStore</div>
+                <nav>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/#products">Products</a></li>
+                        <li><a href="/track.html">Track Order</a></li>
+                        <li><a href="/cart.html">Cart (<span class="cart-count">0</span>)</a></li>
+                        <li><a href="/profile.html" class="profile-link" style="display: none;">Profile</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons">
+                    <a href="/login.html" class="btn btn-primary">Login</a>
+                    <a href="/register.html" class="btn btn-secondary">Register</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="about-hero">
+        <div class="container">
+            <h1>About TechStore</h1>
+            <p>Your trusted partner in technology accessories since 2020</p>
+        </div>
+    </section>
+
+    <main>
+        <!-- Our Story -->
+        <section class="about-section">
+            <div class="container">
+                <h2 class="section-title">Our Story</h2>
+                <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                    <p style="font-size: 1.1rem; line-height: 1.8; color: #666; margin-bottom: 2rem;">
+                        Founded in 2020, TechStore began as a small startup with a big vision: to make high-quality 
+                        technology accessories accessible to everyone. What started as a passion project by tech 
+                        enthusiasts has grown into a trusted online destination for laptop accessories, computer 
+                        peripherals, and printer accessories.
+                    </p>
+                    <p style="font-size: 1.1rem; line-height: 1.8; color: #666;">
+                        We believe that the right accessories can transform your computing experience. Whether you're 
+                        a student, professional, or gaming enthusiast, we're here to help you find the perfect 
+                        accessories to enhance your productivity and enjoyment.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Our Values -->
+        <section class="about-section" style="background: #f8f9fa;">
+            <div class="container">
+                <h2 class="section-title">Our Values</h2>
+                <div class="about-grid">
+                    <div class="about-card">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🎯</div>
+                        <h3>Quality First</h3>
+                        <p>We carefully curate our product selection to ensure every item meets our high standards for quality and reliability.</p>
+                    </div>
+                    <div class="about-card">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🚀</div>
+                        <h3>Innovation</h3>
+                        <p>We stay ahead of technology trends to bring you the latest and most innovative accessories in the market.</p>
+                    </div>
+                    <div class="about-card">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">💝</div>
+                        <h3>Customer Focus</h3>
+                        <p>Your satisfaction is our priority. We provide exceptional customer service and support at every step.</p>
+                    </div>
+                    <div class="about-card">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🌱</div>
+                        <h3>Sustainability</h3>
+                        <p>We're committed to environmental responsibility through eco-friendly packaging and sustainable practices.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistics -->
+        <section class="about-section">
+            <div class="container">
+                <h2 class="section-title">Our Impact</h2>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">50K+</div>
+                        <div class="stat-label">Happy Customers</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Products</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">100K+</div>
+                        <div class="stat-label">Orders Delivered</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">4.8★</div>
+                        <div class="stat-label">Customer Rating</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Our Team -->
+        <section class="about-section" style="background: #f8f9fa;">
+            <div class="container">
+                <h2 class="section-title">Meet Our Team</h2>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="team-avatar">👨‍💼</div>
+                        <h3>Rajesh Kumar</h3>
+                        <p style="color: #3498db; font-weight: bold;">CEO & Founder</p>
+                        <p>Tech entrepreneur with 10+ years of experience in e-commerce and technology retail.</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="team-avatar">👩‍💻</div>
+                        <h3>Priya Sharma</h3>
+                        <p style="color: #3498db; font-weight: bold;">CTO</p>
+                        <p>Software engineer passionate about creating seamless online shopping experiences.</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="team-avatar">👨‍🔧</div>
+                        <h3>Amit Patel</h3>
+                        <p style="color: #3498db; font-weight: bold;">Head of Operations</p>
+                        <p>Logistics expert ensuring fast and reliable delivery to customers across India.</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="team-avatar">👩‍💼</div>
+                        <h3>Sneha Gupta</h3>
+                        <p style="color: #3498db; font-weight: bold;">Customer Success Manager</p>
+                        <p>Dedicated to providing exceptional customer service and support.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Our Journey -->
+        <section class="about-section">
+            <div class="container">
+                <h2 class="section-title">Our Journey</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-year">2020</div>
+                        <h3>The Beginning</h3>
+                        <p>TechStore was founded with a mission to provide quality tech accessories to Indian consumers.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2021</div>
+                        <h3>Rapid Growth</h3>
+                        <p>Expanded our product catalog to over 200 items and served 10,000+ customers.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2022</div>
+                        <h3>National Expansion</h3>
+                        <p>Extended delivery to all major cities across India with same-day delivery in metro cities.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2023</div>
+                        <h3>Innovation Focus</h3>
+                        <p>Launched our mobile app and introduced AI-powered product recommendations.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-year">2024</div>
+                        <h3>Sustainability Initiative</h3>
+                        <p>Committed to carbon-neutral shipping and eco-friendly packaging for all orders.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer style="background: #2c3e50; color: white; text-align: center; padding: 2rem 0; margin-top: 4rem;">
+        <div class="container">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; text-align: left; margin-bottom: 2rem;">
+                <div>
+                    <h4 style="margin-bottom: 1rem;">TechStore</h4>
+                    <p>Your trusted partner for laptop accessories, computer peripherals, and printer accessories.</p>
+                    <p>📧 support@techstore.com</p>
+                    <p>📞 +91 98765 43210</p>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 1rem;">Quick Links</h4>
+                    <p><a href="/" style="color: #bdc3c7; text-decoration: none;">Home</a></p>
+                    <p><a href="/#products" style="color: #bdc3c7; text-decoration: none;">Products</a></p>
+                    <p><a href="/track.html" style="color: #bdc3c7; text-decoration: none;">Track Order</a></p>
+                    <p><a href="/contact.html" style="color: #bdc3c7; text-decoration: none;">Contact</a></p>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 1rem;">Support</h4>
+                    <p><a href="/about.html" style="color: #bdc3c7; text-decoration: none;">About Us</a></p>
+                    <p><a href="/privacy.html" style="color: #bdc3c7; text-decoration: none;">Privacy Policy</a></p>
+                    <p><a href="/terms.html" style="color: #bdc3c7; text-decoration: none;">Terms of Service</a></p>
+                    <p><a href="/contact.html" style="color: #bdc3c7; text-decoration: none;">Help Center</a></p>
+                </div>
+            </div>
+            <hr style="border-color: #34495e; margin: 2rem 0;">
+            <p>&copy; 2024 TechStore. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            auth.checkAuth();
+        });
+    </script>
+</body>
+</html>

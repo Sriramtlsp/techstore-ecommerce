@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - TechStore</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">TechStore</div>
+                <nav>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/#products">Products</a></li>
+                        <li><a href="/track.html">Track Order</a></li>
+                        <li><a href="/cart.html">Cart (<span class="cart-count">0</span>)</a></li>
+                        <li><a href="/profile.html">Profile</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons">
+                    <a href="/login.html" class="btn btn-primary">Login</a>
+                    <a href="/register.html" class="btn btn-secondary">Register</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main style="min-height: 70vh; padding: 2rem 0;">
+        <div class="container">
+            <div id="profileContent">
+                <div style="text-align: center; padding: 2rem;">
+                    <div class="loading"></div>
+                    <p>Loading profile...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditProfileModal()">&times;</span>
+            <h2>Edit Profile</h2>
+            <form id="editProfileForm">
+                <div class="form-group">
+                    <label for="editName">Full Name</label>
+                    <input type="text" id="editName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="editEmail">Email Address</label>
+                    <input type="email" id="editEmail" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPhone">Phone Number</label>
+                    <input type="tel" id="editPhone" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="editAddress">Address</label>
+                    <textarea id="editAddress" class="form-control" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;">
+                    <span class="btn-text">Update Profile</span>
+                    <div class="loading" style="display: none;"></div>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeChangePasswordModal()">&times;</span>
+            <h2>Change Password</h2>
+            <form id="changePasswordForm">
+                <div class="form-group">
+                    <label for="currentPassword">Current Password</label>
+                    <input type="password" id="currentPassword" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">New Password</label>
+                    <input type="password" id="newPassword" class="form-control" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="confirmNewPassword">Confirm New Password</label>
+                    <input type="password" id="confirmNewPassword" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;">
+                    <span class="btn-text">Change Password</span>
+                    <div class="loading" style="display: none;"></div>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+        let userProfile = null;
+        let userOrders = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await auth.checkAuth();
+            
+            if (!currentUser) {
+                showAlert('Please login to view your profile', 'error');
+                setTimeout(() => window.location.href = '/login.html', 2000);
+                return;
+            }
+            
+            await loadUserProfile();
+        });
+
+        async function loadUserProfile() {
+            try {
+                // Get user profile
+                const profileData = await api.getCurrentUser();
+                userProfile = profileData.user;
+                
+                // Get user orders
+                const ordersData = await api.getMyOrders();
+                userOrders = ordersData;
+                
+                displayProfile();
+            } catch (error) {
+                showAlert('Error loading profile: ' + error.message, 'error');
+            }
+        }
+
+        function displayProfile() {
+            const profileContent = document.getElementById('profileContent');
+            
+            const totalOrders = userOrders.length;
+            const totalSpent = userOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+            const recentOrders = userOrders.slice(0, 5);
+
+            profileContent.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; margin-bottom: 2rem;">
+                    <!-- Profile Info -->
+                    <div class="table-container">
+                        <h3 style="padding: 1rem; margin: 0; background: #f8f9fa; border-bottom: 1px solid #eee;">
+                            Profile Information
+                        </h3>
+                        <div style="padding: 1.5rem;">
+                            <div style="text-align: center; margin-bottom: 2rem;">
+                                <div style="width: 80px; height: 80px; border-radius: 50%; background: #3498db; color: white; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1rem;">
+                                    ${userProfile.name.charAt(0).toUpperCase()}
+                                </div>
+                                <h3>${userProfile.name}</h3>
+                                <p style="color: #666;">${userProfile.email}</p>
+                            </div>
+                            
+                            <div style="margin-bottom: 1rem;">
+                                <strong>Member Since:</strong><br>
+                                ${new Date(userProfile.createdAt || Date.now()).toLocaleDateString('en-IN')}
+                            </div>
+                            
+                            <div style="margin-bottom: 1rem;">
+                                <strong>Phone:</strong><br>
+                                ${userProfile.phone || 'Not provided'}
+                            </div>
+                            
+                            <div style="margin-bottom: 2rem;">
+                                <strong>Address:</strong><br>
+                                ${userProfile.address || 'Not provided'}
+                            </div>
+                            
+                            <button class="btn btn-primary" onclick="showEditProfileModal()" style="width: 100%; margin-bottom: 1rem;">
+                                Edit Profile
+                            </button>
+                            <button class="btn btn-secondary" onclick="showChangePasswordModal()" style="width: 100%;">
+                                Change Password
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Order Statistics -->
+                    <div class="table-container">
+                        <h3 style="padding: 1rem; margin: 0; background: #f8f9fa; border-bottom: 1px solid #eee;">
+                            Order Statistics
+                        </h3>
+                        <div style="padding: 1.5rem;">
+                            <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 2rem;">
+                                <div class="stat-card">
+                                    <div class="stat-number">${totalOrders}</div>
+                                    <div class="stat-label">Total Orders</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">${formatPrice(totalSpent)}</div>
+                                    <div class="stat-label">Total Spent</div>
+                                </div>
+                            </div>
+                            
+                            <h4 style="margin-bottom: 1rem;">Order Status Breakdown</h4>
+                            <div style="margin-bottom: 2rem;">
+                                ${getOrderStatusBreakdown()}
+                            </div>
+                            
+                            <a href="#recent-orders" class="btn btn-primary" style="width: 100%;">
+                                View All Orders
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Orders -->
+                <div id="recent-orders" class="table-container">
+                    <h3 style="padding: 1rem; margin: 0; background: #f8f9fa; border-bottom: 1px solid #eee;">
+                        Recent Orders
+                    </h3>
+                    ${userOrders.length === 0 ? `
+                        <div style="padding: 2rem; text-align: center;">
+                            <p>No orders found.</p>
+                            <a href="/#products" class="btn btn-primary">Start Shopping</a>
+                        </div>
+                    ` : `
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Date</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${userOrders.map(order => `
+                                    <tr>
+                                        <td style="font-family: monospace; font-size: 0.8rem;">
+                                            ${order._id.substring(0, 8)}...
+                                        </td>
+                                        <td>${new Date(order.createdAt).toLocaleDateString('en-IN')}</td>
+                                        <td>${order.products.length} item(s)</td>
+                                        <td>${formatPrice(order.totalAmount)}</td>
+                                        <td>
+                                            <span class="status-badge status-${order.status.toLowerCase()}">
+                                                ${order.status}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-secondary" onclick="viewOrderDetails('${order._id}')" style="margin-right: 0.5rem;">
+                                                View Details
+                                            </button>
+                                            <button class="btn btn-primary" onclick="trackOrder('${order._id}')">
+                                                Track
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `}
+                </div>
+            `;
+        }
+
+        function getOrderStatusBreakdown() {
+            const statusCounts = userOrders.reduce((acc, order) => {
+                acc[order.status] = (acc[order.status] || 0) + 1;
+                return acc;
+            }, {});
+
+            const statuses = ['Processing', 'Shipped', 'Delivered', 'Cancelled'];
+            
+            return statuses.map(status => {
+                const count = statusCounts[status] || 0;
+                const percentage = userOrders.length > 0 ? (count / userOrders.length * 100).toFixed(1) : 0;
+                
+                return `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                        <span class="status-badge status-${status.toLowerCase()}">${status}</span>
+                        <span>${count} orders (${percentage}%)</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function showEditProfileModal() {
+            document.getElementById('editName').value = userProfile.name;
+            document.getElementById('editEmail').value = userProfile.email;
+            document.getElementById('editPhone').value = userProfile.phone || '';
+            document.getElementById('editAddress').value = userProfile.address || '';
+            document.getElementById('editProfileModal').style.display = 'block';
+        }
+
+        function closeEditProfileModal() {
+            document.getElementById('editProfileModal').style.display = 'none';
+        }
+
+        function showChangePasswordModal() {
+            document.getElementById('changePasswordForm').reset();
+            document.getElementById('changePasswordModal').style.display = 'block';
+        }
+
+        function closeChangePasswordModal() {
+            document.getElementById('changePasswordModal').style.display = 'none';
+        }
+
+        function viewOrderDetails(orderId) {
+            // Create a detailed order view modal
+            const order = userOrders.find(o => o._id === orderId);
+            if (!order) return;
+
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 800px;">
+                    <span class="close" onclick="this.parentElement.parentElement.remove()">&times;</span>
+                    <h2>Order Details</h2>
+                    <div style="margin-bottom: 2rem;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                            <div>
+                                <strong>Order ID:</strong><br>
+                                <span style="font-family: monospace;">${order._id}</span>
+                            </div>
+                            <div>
+                                <strong>Status:</strong><br>
+                                <span class="status-badge status-${order.status.toLowerCase()}">${order.status}</span>
+                            </div>
+                            <div>
+                                <strong>Order Date:</strong><br>
+                                ${new Date(order.createdAt).toLocaleDateString('en-IN')}
+                            </div>
+                            <div>
+                                <strong>Total Amount:</strong><br>
+                                <span style="font-size: 1.2rem; font-weight: bold; color: #27ae60;">
+                                    ${formatPrice(order.totalAmount)}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <h4>Order Items:</h4>
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${order.products.map(item => `
+                                        <tr>
+                                            <td>${item.productId.name}</td>
+                                            <td>${item.quantity}</td>
+                                            <td>${formatPrice(item.price)}</td>
+                                            <td>${formatPrice(item.price * item.quantity)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        ${order.shippingAddress ? `
+                            <div style="margin-top: 2rem;">
+                                <h4>Shipping Address:</h4>
+                                <p>
+                                    ${order.shippingAddress.street}<br>
+                                    ${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.zipCode}<br>
+                                    ${order.shippingAddress.country}
+                                </p>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function trackOrder(orderId) {
+            window.location.href = `/track.html?orderId=${orderId}`;
+        }
+
+        // Edit Profile Form
+        document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const loading = submitBtn.querySelector('.loading');
+            
+            btnText.style.display = 'none';
+            loading.style.display = 'inline-block';
+            submitBtn.disabled = true;
+            
+            try {
+                const profileData = {
+                    name: document.getElementById('editName').value,
+                    email: document.getElementById('editEmail').value,
+                    phone: document.getElementById('editPhone').value,
+                    address: document.getElementById('editAddress').value
+                };
+                
+                await api.request('/auth/profile', {
+                    method: 'PUT',
+                    body: JSON.stringify(profileData)
+                });
+                
+                showAlert('Profile updated successfully!', 'success');
+                closeEditProfileModal();
+                await loadUserProfile();
+                
+            } catch (error) {
+                showAlert('Error updating profile: ' + error.message, 'error');
+            } finally {
+                btnText.style.display = 'inline';
+                loading.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Change Password Form
+        document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+            
+            if (newPassword !== confirmNewPassword) {
+                showAlert('New passwords do not match', 'error');
+                return;
+            }
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const loading = submitBtn.querySelector('.loading');
+            
+            btnText.style.display = 'none';
+            loading.style.display = 'inline-block';
+            submitBtn.disabled = true;
+            
+            try {
+                await api.request('/auth/change-password', {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        currentPassword,
+                        newPassword
+                    })
+                });
+                
+                showAlert('Password changed successfully!', 'success');
+                closeChangePasswordModal();
+                
+            } catch (error) {
+                showAlert('Error changing password: ' + error.message, 'error');
+            } finally {
+                btnText.style.display = 'inline';
+                loading.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const editModal = document.getElementById('editProfileModal');
+            const passwordModal = document.getElementById('changePasswordModal');
+            
+            if (event.target === editModal) {
+                closeEditProfileModal();
+            }
+            if (event.target === passwordModal) {
+                closeChangePasswordModal();
+            }
+        }
+    </script>
+</body>
+</html>

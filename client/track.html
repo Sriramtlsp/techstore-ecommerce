@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order - TechStore</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">TechStore</div>
+                <nav>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/#products">Products</a></li>
+                        <li><a href="/track.html">Track Order</a></li>
+                        <li><a href="/cart.html">Cart (<span class="cart-count">0</span>)</a></li>
+                        <li><a href="/profile.html" class="profile-link" style="display: none;">Profile</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons">
+                    <a href="/login.html" class="btn btn-primary">Login</a>
+                    <a href="/register.html" class="btn btn-secondary">Register</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main style="min-height: 70vh; padding: 2rem 0;">
+        <div class="container">
+            <h2 class="section-title">Track Your Order</h2>
+            
+            <div class="form-container" style="max-width: 600px;">
+                <div class="form-group">
+                    <label for="orderId">Order ID</label>
+                    <input type="text" id="orderId" class="form-control" 
+                           placeholder="Enter your order ID (e.g., 507f1f77bcf86cd799439011)">
+                </div>
+                
+                <button onclick="trackOrder()" class="btn btn-primary" style="width: 100%;">
+                    <span class="btn-text">Track Order</span>
+                    <div class="loading" style="display: none;"></div>
+                </button>
+            </div>
+
+            <div id="orderDetails" style="margin-top: 2rem;"></div>
+        </div>
+    </main>
+
+    <script src="/js/app.js"></script>
+    <script>
+        async function trackOrder() {
+            const orderIdInput = document.getElementById('orderId');
+            const orderId = orderIdInput.value.trim();
+            const button = document.querySelector('button');
+            const btnText = button.querySelector('.btn-text');
+            const loading = button.querySelector('.loading');
+            const orderDetails = document.getElementById('orderDetails');
+            
+            if (!orderId) {
+                showAlert('Please enter an order ID', 'error');
+                return;
+            }
+            
+            // Show loading state
+            btnText.style.display = 'none';
+            loading.style.display = 'inline-block';
+            button.disabled = true;
+            orderDetails.innerHTML = '';
+            
+            try {
+                const order = await api.trackOrder(orderId);
+                displayOrderDetails(order);
+            } catch (error) {
+                showAlert(error.message, 'error');
+                orderDetails.innerHTML = '';
+            } finally {
+                // Reset button state
+                btnText.style.display = 'inline';
+                loading.style.display = 'none';
+                button.disabled = false;
+            }
+        }
+        
+        function displayOrderDetails(order) {
+            const orderDetails = document.getElementById('orderDetails');
+            
+            const statusClass = `status-${order.status.toLowerCase()}`;
+            const orderDate = new Date(order.createdAt).toLocaleDateString('en-IN');
+            
+            orderDetails.innerHTML = `
+                <div class="table-container">
+                    <h3 style="padding: 1rem; margin: 0; background: #f8f9fa; border-bottom: 1px solid #eee;">
+                        Order Details
+                    </h3>
+                    <div style="padding: 1.5rem;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                            <div>
+                                <strong>Order ID:</strong><br>
+                                <span style="font-family: monospace;">${order._id}</span>
+                            </div>
+                            <div>
+                                <strong>Status:</strong><br>
+                                <span class="status-badge ${statusClass}">${order.status}</span>
+                            </div>
+                            <div>
+                                <strong>Order Date:</strong><br>
+                                ${orderDate}
+                            </div>
+                            <div>
+                                <strong>Total Amount:</strong><br>
+                                <span style="font-size: 1.2rem; font-weight: bold; color: #27ae60;">
+                                    ${formatPrice(order.totalAmount)}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        ${order.shippingAddress ? `
+                            <div style="margin-bottom: 2rem;">
+                                <h4>Shipping Address:</h4>
+                                <p>
+                                    ${order.shippingAddress.street}<br>
+                                    ${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.zipCode}<br>
+                                    ${order.shippingAddress.country}
+                                </p>
+                            </div>
+                        ` : ''}
+                        
+                        <h4>Order Items:</h4>
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Quantity</th>
+                                        <th>Price</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${order.products.map(item => `
+                                        <tr>
+                                            <td>${item.productId.name}</td>
+                                            <td>${item.quantity}</td>
+                                            <td>${formatPrice(item.price)}</td>
+                                            <td>${formatPrice(item.price * item.quantity)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div style="margin-top: 2rem; padding: 1rem; background: #f8f9fa; border-radius: 5px;">
+                            <h4>Order Status Timeline:</h4>
+                            <div style="margin-top: 1rem;">
+                                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                                    <div style="width: 12px; height: 12px; border-radius: 50%; background: #27ae60; margin-right: 1rem;"></div>
+                                    <span>Order Placed - ${orderDate}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                                    <div style="width: 12px; height: 12px; border-radius: 50%; background: ${order.status === 'Processing' ? '#f39c12' : '#27ae60'}; margin-right: 1rem;"></div>
+                                    <span>Processing ${order.status === 'Processing' ? '(Current)' : '✓'}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                                    <div style="width: 12px; height: 12px; border-radius: 50%; background: ${order.status === 'Shipped' ? '#f39c12' : order.status === 'Delivered' ? '#27ae60' : '#ddd'}; margin-right: 1rem;"></div>
+                                    <span>Shipped ${order.status === 'Shipped' ? '(Current)' : order.status === 'Delivered' ? '✓' : ''}</span>
+                                </div>
+                                <div style="display: flex; align-items: center;">
+                                    <div style="width: 12px; height: 12px; border-radius: 50%; background: ${order.status === 'Delivered' ? '#27ae60' : '#ddd'}; margin-right: 1rem;"></div>
+                                    <span>Delivered ${order.status === 'Delivered' ? '(Current) ✓' : ''}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Allow tracking by pressing Enter
+        document.getElementById('orderId').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                trackOrder();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Status - TechStore</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .status-timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .status-timeline::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #ddd;
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 80px;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-icon {
+            position: absolute;
+            left: 15px;
+            top: 0;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            z-index: 1;
+        }
+
+        .timeline-icon.completed {
+            background: #27ae60;
+        }
+
+        .timeline-icon.current {
+            background: #f39c12;
+            animation: pulse 2s infinite;
+        }
+
+        .timeline-icon.pending {
+            background: #bdc3c7;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(243, 156, 18, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(243, 156, 18, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(243, 156, 18, 0); }
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .timeline-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-description {
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-date {
+            font-size: 0.9rem;
+            color: #999;
+        }
+
+        .order-progress {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            transition: width 0.3s ease;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .progress-step {
+            text-align: center;
+            flex: 1;
+        }
+
+        .progress-step.completed {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .progress-step.current {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .estimated-delivery {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .delivery-date {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">TechStore</div>
+                <nav>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/#products">Products</a></li>
+                        <li><a href="/track.html">Track Order</a></li>
+                        <li><a href="/cart.html">Cart (<span class="cart-count">0</span>)</a></li>
+                        <li><a href="/profile.html">Profile</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons">
+                    <a href="/login.html" class="btn btn-primary">Login</a>
+                    <a href="/register.html" class="btn btn-secondary">Register</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main style="min-height: 70vh; padding: 2rem 0;">
+        <div class="container">
+            <h2 class="section-title">Order Status Tracking</h2>
+            
+            <div class="form-container" style="max-width: 600px;">
+                <div class="form-group">
+                    <label for="orderId">Order ID</label>
+                    <input type="text" id="orderId" class="form-control" 
+                           placeholder="Enter your order ID">
+                </div>
+                
+                <button onclick="trackOrderStatus()" class="btn btn-primary" style="width: 100%;">
+                    <span class="btn-text">Track Order Status</span>
+                    <div class="loading" style="display: none;"></div>
+                </button>
+            </div>
+
+            <div id="orderStatusDetails" style="margin-top: 2rem;"></div>
+        </div>
+    </main>
+
+    <script src="/js/app.js"></script>
+    <script>
+        // Check URL parameters for order ID
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderIdFromUrl = urlParams.get('orderId');
+        if (orderIdFromUrl) {
+            document.getElementById('orderId').value = orderIdFromUrl;
+            trackOrderStatus();
+        }
+
+        async function trackOrderStatus() {
+            const orderIdInput = document.getElementById('orderId');
+            const orderId = orderIdInput.value.trim();
+            const button = document.querySelector('button');
+            const btnText = button.querySelector('.btn-text');
+            const loading = button.querySelector('.loading');
+            const orderDetails = document.getElementById('orderStatusDetails');
+            
+            if (!orderId) {
+                showAlert('Please enter an order ID', 'error');
+                return;
+            }
+            
+            // Show loading state
+            btnText.style.display = 'none';
+            loading.style.display = 'inline-block';
+            button.disabled = true;
+            orderDetails.innerHTML = '';
+            
+            try {
+                const order = await api.trackOrder(orderId);
+                displayOrderStatus(order);
+            } catch (error) {
+                showAlert(error.message, 'error');
+                orderDetails.innerHTML = '';
+            } finally {
+                // Reset button state
+                btnText.style.display = 'inline';
+                loading.style.display = 'none';
+                button.disabled = false;
+            }
+        }
+
+        function displayOrderStatus(order) {
+            const orderDetails = document.getElementById('orderStatusDetails');
+            
+            const statusSteps = ['Processing', 'Shipped', 'Delivered'];
+            const currentStepIndex = statusSteps.indexOf(order.status);
+            const progressPercentage = order.status === 'Cancelled' ? 0 : 
+                                    ((currentStepIndex + 1) / statusSteps.length) * 100;
+
+            // Calculate estimated delivery date
+            const orderDate = new Date(order.createdAt);
+            const estimatedDelivery = new Date(orderDate);
+            estimatedDelivery.setDate(orderDate.getDate() + 7); // 7 days from order
+
+            orderDetails.innerHTML = `
+                <!-- Order Header -->
+                <div class="table-container" style="margin-bottom: 2rem;">
+                    <div style="padding: 1.5rem;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                            <div>
+                                <strong>Order ID:</strong><br>
+                                <span style="font-family: monospace; font-size: 0.9rem;">${order._id}</span>
+                            </div>
+                            <div>
+                                <strong>Order Date:</strong><br>
+                                ${new Date(order.createdAt).toLocaleDateString('en-IN', {
+                                    weekday: 'long',
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                })}
+                            </div>
+                            <div>
+                                <strong>Total Amount:</strong><br>
+                                <span style="font-size: 1.3rem; font-weight: bold; color: #27ae60;">
+                                    ${formatPrice(order.totalAmount)}
+                                </span>
+                            </div>
+                            <div>
+                                <strong>Current Status:</strong><br>
+                                <span class="status-badge status-${order.status.toLowerCase()}" style="font-size: 1rem;">
+                                    ${order.status}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                ${order.status !== 'Cancelled' ? `
+                    <!-- Estimated Delivery -->
+                    <div class="estimated-delivery">
+                        <div class="delivery-date">
+                            ${order.status === 'Delivered' ? 'Delivered on' : 'Estimated Delivery'}
+                        </div>
+                        <div>
+                            ${order.status === 'Delivered' ? 
+                                new Date(order.updatedAt || order.createdAt).toLocaleDateString('en-IN', {
+                                    weekday: 'long',
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                }) :
+                                estimatedDelivery.toLocaleDateString('en-IN', {
+                                    weekday: 'long',
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                })
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="order-progress">
+                        <h4 style="margin-bottom: 1rem;">Order Progress</h4>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progressPercentage}%;"></div>
+                        </div>
+                        <div class="progress-steps">
+                            ${statusSteps.map((step, index) => `
+                                <div class="progress-step ${
+                                    index < currentStepIndex ? 'completed' : 
+                                    index === currentStepIndex ? 'current' : ''
+                                }">
+                                    ${step}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+
+                <!-- Status Timeline -->
+                <div class="table-container">
+                    <h3 style="padding: 1rem; margin: 0; background: #f8f9fa; border-bottom: 1px solid #eee;">
+                        Order Timeline
+                    </h3>
+                    <div style="padding: 1rem;">
+                        <div class="status-timeline">
+                            ${generateTimeline(order)}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Items -->
+                <div class="table-container" style="margin-top: 2rem;">
+                    <h3 style="padding: 1rem; margin: 0; background: #f8f9fa; border-bottom: 1px solid #eee;">
+                        Order Items
+                    </h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${order.products.map(item => `
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center;">
+                                            <img src="${item.productId.image}" alt="${item.productId.name}" 
+                                                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px; margin-right: 1rem;">
+                                            <div>
+                                                <div style="font-weight: bold;">${item.productId.name}</div>
+                                                <div style="font-size: 0.9rem; color: #666;">${item.productId.category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>${item.quantity}</td>
+                                    <td>${formatPrice(item.price)}</td>
+                                    <td>${formatPrice(item.price * item.quantity)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+
+                ${order.shippingAddress ? `
+                    <!-- Shipping Address -->
+                    <div class="table-container" style="margin-top: 2rem;">
+                        <h3 style="padding: 1rem; margin: 0; background: #f8f9fa; border-bottom: 1px solid #eee;">
+                            Shipping Address
+                        </h3>
+                        <div style="padding: 1.5rem;">
+                            <p style="margin: 0; line-height: 1.6;">
+                                ${order.shippingAddress.street}<br>
+                                ${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.zipCode}<br>
+                                ${order.shippingAddress.country}
+                            </p>
+                        </div>
+                    </div>
+                ` : ''}
+
+                <!-- Actions -->
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-primary" onclick="window.print()" style="margin-right: 1rem;">
+                        Print Order Details
+                    </button>
+                    <a href="/#products" class="btn btn-secondary">
+                        Continue Shopping
+                    </a>
+                </div>
+            `;
+        }
+
+        function generateTimeline(order) {
+            const timeline = [];
+            const orderDate = new Date(order.createdAt);
+            
+            // Order Placed
+            timeline.push({
+                title: 'Order Placed',
+                description: 'Your order has been successfully placed and is being prepared.',
+                date: orderDate,
+                status: 'completed',
+                icon: '1'
+            });
+
+            // Processing
+            if (order.status === 'Processing') {
+                timeline.push({
+                    title: 'Processing',
+                    description: 'Your order is currently being processed and prepared for shipment.',
+                    date: null,
+                    status: 'current',
+                    icon: '2'
+                });
+            } else if (['Shipped', 'Delivered'].includes(order.status)) {
+                const processingDate = new Date(orderDate);
+                processingDate.setHours(orderDate.getHours() + 2);
+                timeline.push({
+                    title: 'Processing Complete',
+                    description: 'Your order has been processed and is ready for shipment.',
+                    date: processingDate,
+                    status: 'completed',
+                    icon: '✓'
+                });
+            }
+
+            // Shipped
+            if (order.status === 'Shipped') {
+                const shippedDate = new Date(orderDate);
+                shippedDate.setDate(orderDate.getDate() + 1);
+                timeline.push({
+                    title: 'Shipped',
+                    description: 'Your order has been shipped and is on its way to you.',
+                    date: shippedDate,
+                    status: 'current',
+                    icon: '🚚'
+                });
+            } else if (order.status === 'Delivered') {
+                const shippedDate = new Date(orderDate);
+                shippedDate.setDate(orderDate.getDate() + 1);
+                timeline.push({
+                    title: 'Shipped',
+                    description: 'Your order was shipped and on its way to you.',
+                    date: shippedDate,
+                    status: 'completed',
+                    icon: '✓'
+                });
+            }
+
+            // Delivered
+            if (order.status === 'Delivered') {
+                const deliveredDate = new Date(order.updatedAt || orderDate);
+                timeline.push({
+                    title: 'Delivered',
+                    description: 'Your order has been successfully delivered. Thank you for shopping with us!',
+                    date: deliveredDate,
+                    status: 'completed',
+                    icon: '📦'
+                });
+            } else if (order.status !== 'Cancelled') {
+                timeline.push({
+                    title: 'Out for Delivery',
+                    description: 'Your order will be delivered soon.',
+                    date: null,
+                    status: 'pending',
+                    icon: '3'
+                });
+            }
+
+            // Cancelled
+            if (order.status === 'Cancelled') {
+                timeline.push({
+                    title: 'Order Cancelled',
+                    description: 'Your order has been cancelled. If you have any questions, please contact our support team.',
+                    date: new Date(order.updatedAt || orderDate),
+                    status: 'current',
+                    icon: '❌'
+                });
+            }
+
+            return timeline.map(item => `
+                <div class="timeline-item">
+                    <div class="timeline-icon ${item.status}">
+                        ${item.icon}
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">${item.title}</div>
+                        <div class="timeline-description">${item.description}</div>
+                        ${item.date ? `
+                            <div class="timeline-date">
+                                ${item.date.toLocaleDateString('en-IN', {
+                                    weekday: 'short',
+                                    year: 'numeric',
+                                    month: 'short',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Allow tracking by pressing Enter
+        document.getElementById('orderId').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                trackOrderStatus();
+            }
+        });
+    </script>
+</body>
+</html>

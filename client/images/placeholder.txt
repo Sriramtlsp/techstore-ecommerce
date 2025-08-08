@@ -1,0 +1,9 @@
+This folder contains product images and other assets for the TechStore website.
+
+You can upload product images here and reference them in your products.
+
+Example usage:
+- Product images: /images/products/laptop-stand.jpg
+- Category banners: /images/banners/laptop-accessories.jpg
+- Icons: /images/icons/payment-methods.png
+- Logos: /images/logo/techstore-logo.png

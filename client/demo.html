@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo - TechStore Features</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .demo-section {
+            background: white;
+            margin: 2rem 0;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+
+        .feature-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .demo-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: background 0.3s;
+        }
+
+        .demo-button:hover {
+            background: #2980b9;
+        }
+
+        .demo-button.secondary {
+            background: #95a5a6;
+        }
+
+        .demo-button.secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-online {
+            background: #27ae60;
+            animation: pulse 2s infinite;
+        }
+
+        .status-offline {
+            background: #e74c3c;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">TechStore Demo</div>
+                <nav>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/#products">Products</a></li>
+                        <li><a href="/track.html">Track Order</a></li>
+                        <li><a href="/cart.html">Cart (<span class="cart-count">0</span>)</a></li>
+                        <li><a href="/contact.html">Contact</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons">
+                    <a href="/login.html" class="btn btn-primary">Login</a>
+                    <a href="/register.html" class="btn btn-secondary">Register</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main style="min-height: 70vh; padding: 2rem 0;">
+        <div class="container">
+            <h1 class="section-title">🚀 TechStore New Features Demo</h1>
+            <p style="text-align: center; margin-bottom: 3rem; color: #666;">
+                Explore all the new features we've added to enhance your shopping experience!
+            </p>
+
+            <!-- Live Chat Demo -->
+            <div class="demo-section">
+                <h2>💬 Live Chat Support</h2>
+                <p>Our intelligent live chat widget provides instant customer support with:</p>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>🤖 Smart Responses</h3>
+                        <p>AI-powered responses for common queries about orders, products, and support.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>⚡ Quick Replies</h3>
+                        <p>Pre-defined quick reply buttons for faster customer interaction.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>📱 Mobile Responsive</h3>
+                        <p>Fully responsive design that works perfectly on all devices.</p>
+                    </div>
+                </div>
+                <div style="margin-top: 1rem;">
+                    <span class="status-indicator status-online"></span>
+                    <strong>Live Chat Status: Online</strong>
+                    <p style="margin-top: 0.5rem; color: #666;">
+                        The chat widget is automatically loaded on all pages. Look for the blue chat button in the bottom-right corner!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Footer Pages Demo -->
+            <div class="demo-section">
+                <h2>📄 Footer Pages & Contact</h2>
+                <p>Complete set of essential pages for a professional e-commerce experience:</p>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>📞 Contact Page</h3>
+                        <p>Comprehensive contact information with contact form, business hours, and location details.</p>
+                        <a href="/contact.html" class="demo-button">View Contact Page</a>
+                    </div>
+                    <div class="feature-card">
+                        <h3>ℹ️ About Us</h3>
+                        <p>Company story, team information, values, and journey timeline.</p>
+                        <a href="/about.html" class="demo-button">View About Page</a>
+                    </div>
+                    <div class="feature-card">
+                        <h3>🔒 Privacy Policy</h3>
+                        <p>Comprehensive privacy policy covering data collection, usage, and user rights.</p>
+                        <a href="/privacy.html" class="demo-button">View Privacy Policy</a>
+                    </div>
+                    <div class="feature-card">
+                        <h3>📋 Terms of Service</h3>
+                        <p>Detailed terms and conditions for using the platform and making purchases.</p>
+                        <a href="/terms.html" class="demo-button">View Terms</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Images Storage Demo -->
+            <div class="demo-section">
+                <h2>🖼️ Images Storage System</h2>
+                <p>Organized image storage structure for better asset management:</p>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>📁 Organized Structure</h3>
+                        <p>Dedicated folders for products, banners, icons, and logos.</p>
+                        <code style="background: #f1f2f6; padding: 0.5rem; border-radius: 3px; display: block; margin-top: 0.5rem;">
+                            /images/<br>
+                            ├── products/<br>
+                            ├── banners/<br>
+                            ├── icons/<br>
+                            └── logos/
+                        </code>
+                    </div>
+                    <div class="feature-card">
+                        <h3>🔗 Easy Integration</h3>
+                        <p>Simple URL structure for referencing images in products and content.</p>
+                        <code style="background: #f1f2f6; padding: 0.5rem; border-radius: 3px; display: block; margin-top: 0.5rem;">
+                            /images/products/laptop-stand.jpg
+                        </code>
+                    </div>
+                    <div class="feature-card">
+                        <h3>📊 Scalable Solution</h3>
+                        <p>Ready for CDN integration and optimized image delivery.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Footer Demo -->
+            <div class="demo-section">
+                <h2>🦶 Enhanced Footer</h2>
+                <p>Professional footer with comprehensive information and functionality:</p>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>📧 Contact Information</h3>
+                        <p>Email, phone, and address with clickable links for easy contact.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>🔗 Quick Navigation</h3>
+                        <p>Easy access to all important pages and sections.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>📱 Social Media</h3>
+                        <p>Social media links with hover effects and animations.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>📬 Newsletter Signup</h3>
+                        <p>Email subscription form with validation and confirmation.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Demo Actions -->
+            <div class="demo-section">
+                <h2>🎮 Try It Out!</h2>
+                <p>Test all the new features:</p>
+                <div style="text-align: center; margin: 2rem 0;">
+                    <button class="demo-button" onclick="triggerChatNotification()">
+                        💬 Show Chat Notification
+                    </button>
+                    <button class="demo-button" onclick="openChat()">
+                        🗨️ Open Live Chat
+                    </button>
+                    <button class="demo-button secondary" onclick="testNewsletter()">
+                        📧 Test Newsletter
+                    </button>
+                    <button class="demo-button secondary" onclick="scrollToFooter()">
+                        🦶 View Enhanced Footer
+                    </button>
+                </div>
+            </div>
+
+            <!-- Feature Status -->
+            <div class="demo-section">
+                <h2>✅ Feature Status</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                    <div style="display: flex; align-items: center;">
+                        <span class="status-indicator status-online"></span>
+                        <span>Live Chat Widget</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="status-indicator status-online"></span>
+                        <span>Contact Page</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="status-indicator status-online"></span>
+                        <span>About Us Page</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="status-indicator status-online"></span>
+                        <span>Privacy Policy</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="status-indicator status-online"></span>
+                        <span>Terms of Service</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="status-indicator status-online"></span>
+                        <span>Images Storage</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="status-indicator status-online"></span>
+                        <span>Enhanced Footer</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="status-indicator status-online"></span>
+                        <span>Newsletter Signup</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer style="background: #2c3e50; color: white; text-align: center; padding: 2rem 0; margin-top: 4rem;">
+        <div class="container">
+            <p>&copy; 2024 TechStore. All rights reserved.</p>
+            <p>Demo page showcasing new features</p>
+        </div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+    <script src="/js/livechat.js"></script>
+    <script src="/js/footer.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            auth.checkAuth();
+        });
+
+        function triggerChatNotification() {
+            if (window.liveChat) {
+                window.liveChat.showNotification();
+                alert('Chat notification triggered! Check the chat button.');
+            } else {
+                alert('Live chat is loading... Please try again in a moment.');
+            }
+        }
+
+        function openChat() {
+            if (window.liveChat) {
+                window.liveChat.toggleChat();
+            } else {
+                alert('Live chat is loading... Please try again in a moment.');
+            }
+        }
+
+        function testNewsletter() {
+            const email = prompt('Enter your email to test newsletter signup:');
+            if (email) {
+                if (isValidEmail(email)) {
+                    alert('Newsletter signup successful! (Demo mode)');
+                } else {
+                    alert('Please enter a valid email address.');
+                }
+            }
+        }
+
+        function scrollToFooter() {
+            document.querySelector('footer').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+    </script>
+</body>
+</html>
